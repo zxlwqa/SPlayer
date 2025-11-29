@@ -67,15 +67,15 @@
                 <SvgIcon name="Music" :depth="3" />
                 <n-text>{{ playlistDetailData.count || 0 }}</n-text>
               </div> -->
-              <div v-if="playlistDetailData.updateTime && !isMobile" class="item">
+              <div v-if="playlistDetailData.updateTime" class="item">
                 <SvgIcon name="Update" :depth="3" />
                 <n-text>{{ formatTimestamp(playlistDetailData.updateTime) }}</n-text>
               </div>
-              <div v-if="playlistDetailData.createTime && !isMobile" class="item">
+              <div v-if="playlistDetailData.createTime" class="item">
                 <SvgIcon name="Time" :depth="3" />
                 <n-text>{{ formatTimestamp(playlistDetailData.createTime) }}</n-text>
               </div>
-              <div v-if="playlistDetailData.tags?.length && !isMobile" class="item">
+              <div v-if="playlistDetailData.tags?.length" class="item">
                 <SvgIcon name="Tag" :depth="3" />
                 <n-flex class="tags">
                   <n-tag
@@ -105,54 +105,47 @@
                 type="primary"
                 strong
                 secondary
-                :circle="isMobile"
                 round
                 @click="playAllSongs"
               >
                 <template #icon>
                   <SvgIcon name="Play" />
                 </template>
-                <span v-if="!isMobile">
-                  {{
-                    loading
-                      ? isSamePlaylist
-                        ? "更新中..."
-                        : `加载中... (${
-                            playlistData.length === playlistDetailData.count
-                              ? 0
-                              : playlistData.length
-                          }/${playlistDetailData.count})`
-                      : "播放"
-                  }}
-                </span>
+                {{
+                  loading
+                    ? isSamePlaylist
+                      ? "更新中..."
+                      : `加载中... (${
+                          playlistData.length === playlistDetailData.count ? 0 : playlistData.length
+                        }/${playlistDetailData.count})`
+                    : "播放"
+                }}
               </n-button>
               <n-button
                 v-if="isUserPlaylist"
                 :focusable="false"
                 strong
                 secondary
-                :circle="isMobile"
                 round
                 @click="updatePlaylist"
               >
                 <template #icon>
                   <SvgIcon name="EditNote" />
                 </template>
-                <span v-if="!isMobile">编辑歌单</span>
+                编辑歌单
               </n-button>
               <n-button
                 v-else
                 :focusable="false"
                 strong
                 secondary
-                :circle="isMobile"
                 round
                 @click="toLikePlaylist(playlistId, !isLikePlaylist)"
               >
                 <template #icon>
                   <SvgIcon :name="isLikePlaylist ? 'Favorite' : 'FavoriteBorder'" />
                 </template>
-                <span v-if="!isMobile">{{ isLikePlaylist ? "取消收藏" : "收藏歌单" }}</span>
+                {{ isLikePlaylist ? "取消收藏" : "收藏歌单" }}
               </n-button>
               <!-- 更多 -->
               <n-dropdown :options="moreOptions" trigger="click" placement="bottom-start">
@@ -166,7 +159,7 @@
             <n-flex class="right">
               <!-- 模糊搜索 -->
               <n-input
-                v-if="playlistData?.length && !isMobile"
+                v-if="playlistData?.length"
                 v-model:value="searchValue"
                 :input-props="{ autocomplete: 'off' }"
                 class="search"
@@ -229,7 +222,6 @@ import { formatCoverList, formatSongsList } from "@/utils/format";
 import { coverLoaded, formatNumber, fuzzySearch, renderIcon } from "@/utils/helper";
 import { renderToolbar } from "@/utils/meta";
 import { isLogin, toLikePlaylist, updateUserLikePlaylist } from "@/utils/auth";
-import { isMobile } from "@/utils/env";
 import { debounce } from "lodash-es";
 import { useDataStore, useStatusStore } from "@/stores";
 import { openBatchList, openDescModal, openUpdatePlaylist } from "@/utils/modal";
@@ -632,9 +624,6 @@ onMounted(() => getPlaylistDetail(playlistId.value));
       flex-direction: column;
       flex: 1;
       padding-right: 60px;
-      @media (max-width: 768px) {
-        padding-right: 0;
-      }
       :deep(.n-skeleton) {
         margin-bottom: 12px;
         border-radius: 8px;

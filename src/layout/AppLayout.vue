@@ -11,7 +11,6 @@
     >
       <!-- 侧边栏 -->
       <n-layout-sider
-        v-if="!isMobile"
         id="main-sider"
         :style="{
           height:
@@ -34,17 +33,6 @@
       >
         <Sider />
       </n-layout-sider>
-      <!-- 移动端侧边栏抽屉 -->
-      <n-drawer
-        v-if="isMobile"
-        v-model:show="statusStore.showMobileSidebar"
-        :width="260"
-        placement="left"
-      >
-        <n-drawer-content :body-content-style="{ padding: 0 }">
-          <Sider />
-        </n-drawer-content>
-      </n-drawer>
       <n-layout id="main-layout">
         <!-- 导航栏 -->
         <Nav id="main-header" />
@@ -59,7 +47,7 @@
             display: 'grid',
             gridTemplateRows: '1fr',
             minHeight: '100%',
-            padding: isMobile ? '0 12px' : '0 24px',
+            padding: '0 24px',
           }"
           position="absolute"
           embedded
@@ -92,7 +80,6 @@
 <script setup lang="ts">
 import { useMusicStore, useStatusStore, useSettingStore } from "@/stores";
 import init from "@/utils/init";
-import { isMobile } from "@/utils/env";
 
 const musicStore = useMusicStore();
 const statusStore = useStatusStore();

@@ -175,7 +175,7 @@ import { NScrollbar } from "naive-ui";
 import { useMusicStore, useSettingStore, useStatusStore } from "@/stores";
 import { usePlayer } from "@/utils/player";
 import { getLyricLanguage } from "@/utils/format";
-import { isElectron, isMobile } from "@/utils/env";
+import { isElectron } from "@/utils/env";
 import LyricMenu from "./LyricMenu.vue";
 
 const player = usePlayer();
@@ -210,7 +210,7 @@ const lyricsScroll = (index: number) => {
     // 调整滚动的距离
     const scrollDistance = lrcItemDom.offsetTop - container.offsetTop - 100;
     // 开始滚动
-    if (settingStore.lyricsScrollPosition === "center" || isMobile) {
+    if (settingStore.lyricsScrollPosition === "center") {
       lrcItemDom?.scrollIntoView({ behavior: "smooth", block: "center" });
     } else {
       lyricScroll.value?.scrollTo({ top: scrollDistance, behavior: "smooth" });
@@ -346,10 +346,6 @@ onBeforeUnmount(() => {
     padding-right: 80px;
     max-width: 100%; /* 新增：防止宽度溢出 */
     box-sizing: border-box; /* 新增：确保 padding 不影响宽度 */
-    @media (max-width: 768px) {
-      padding-left: 20px;
-      padding-right: 20px;
-    }
   }
   .placeholder {
     width: 100%;
@@ -379,16 +375,21 @@ onBeforeUnmount(() => {
     padding: 10px 16px;
     transform: scale(0.86);
     transform-origin: left center;
-    @media (max-width: 768px) {
-      align-items: flex-start;
-      font-size: calc(var(--lrc-size) - 4px);
-    }
     will-change: filter, opacity, transform;
     transition:
       filter 0.35s,
       opacity 0.35s,
       transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
     cursor: pointer;
+    width: 100%;
+    .content {
+      display: block;
+      font-size: var(--lrc-size);
+      font-weight: var(--lrc-bold);
+      width: 100%;
+      overflow-wrap: anywhere; /* 支持超长单词换行 */
+      word-break: break-word; /* 优先空格或连字符换行，超长单词强制换行 */
+      white-space: normal; /* 新增：明确文本换行行为 */
       hyphens: auto; /* 英文自动连字符 */
       .content-text {
         position: relative;
@@ -446,7 +447,7 @@ onBeforeUnmount(() => {
       &:lang(ja) {
         font-family: var(--ja-font-family);
       }
-    
+    }
     .tran {
       margin-top: 8px;
       opacity: 0.6;
@@ -505,9 +506,6 @@ onBeforeUnmount(() => {
         .roma {
           text-align: right;
           justify-content: flex-end;
-          @media (max-width: 768px) {
-            justify-content: flex-start;
-          }
         }
       }
     }
@@ -602,11 +600,8 @@ onBeforeUnmount(() => {
   &.pure {
     :deep(.n-scrollbar-content) {
       padding: 0 80px;
-      max-width: 100%;
-      box-sizing: border-box;
-      @media (max-width: 768px) {
-        padding: 0 20px;
-      }
+      max-width: 100%; /* 新增：防止宽度溢出 */
+      box-sizing: border-box; /* 新增：确保 padding 不影响宽度 */
     }
     .lyric-content {
       .placeholder {

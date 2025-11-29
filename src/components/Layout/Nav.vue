@@ -2,27 +2,16 @@
   <n-layout-header class="nav">
     <!-- 页面导航 -->
     <n-flex class="page-control">
-      <!-- 桌面端：后退/前进 -->
-      <template v-if="!isMobile">
-        <n-button :focusable="false" tertiary circle @click="router.go(-1)">
-          <template #icon>
-            <SvgIcon name="NavigateBefore" :size="26" />
-          </template>
-        </n-button>
-        <n-button :focusable="false" tertiary circle @click="router.go(1)">
-          <template #icon>
-            <SvgIcon name="NavigateNext" :size="26" />
-          </template>
-        </n-button>
-      </template>
-      <!-- 移动端：菜单/设置 -->
-      <template v-else>
-        <n-button :focusable="false" tertiary circle @click="statusStore.showMobileSidebar = true">
-          <template #icon>
-            <SvgIcon name="Menu" :size="22" />
-          </template>
-        </n-button>
-      </template>
+      <n-button :focusable="false" tertiary circle @click="router.go(-1)">
+        <template #icon>
+          <SvgIcon name="NavigateBefore" :size="26" />
+        </template>
+      </n-button>
+      <n-button :focusable="false" tertiary circle @click="router.go(1)">
+        <template #icon>
+          <SvgIcon name="NavigateNext" :size="26" />
+        </template>
+      </n-button>
     </n-flex>
     <!-- 主内容 -->
     <n-flex class="nav-main">
@@ -101,14 +90,13 @@
 
 <script setup lang="ts">
 import type { DropdownOption } from "naive-ui";
-import { useSettingStore, useStatusStore } from "@/stores";
+import { useSettingStore } from "@/stores";
 import { renderIcon } from "@/utils/helper";
 import { openSetting } from "@/utils/modal";
-import { isDev, isElectron, isMobile } from "@/utils/env";
+import { isDev, isElectron } from "@/utils/env";
 
 const router = useRouter();
 const settingStore = useSettingStore();
-const statusStore = useStatusStore();
 
 const showCloseModal = ref(false);
 // 是否记住
@@ -170,29 +158,6 @@ const setOptions = computed<DropdownOption[]>(() => [
     key: "divider-1",
     type: "divider",
   },
-  // {
-  //   // 交流群
-  //   key: "qq",
-  //   label: "加入交流群",
-  //   props: {
-  //     onClick: () =>
-  //       openLink(
-  //         "https://qm.qq.com/cgi-bin/qm/qr?k=2-cVSf1bE0AvAehCib00qFEFdUvPaJ_k&jump_from=webapi&authKey=1NEhib9+GsmsXVo2rCc0IbRaVHeeRXJJ0gbsyKDcIwDdAzYySOubkFCvkV32+7Cw",
-  //       ),
-  //   },
-  //   icon: renderIcon("QQ"),
-  // },
-  // {
-  //   // 交流群
-  //   key: "github",
-  //   label: "开源仓库",
-  //   props: { onClick: () => openLink(packageJson.github) },
-  //   icon: renderIcon("Github"),
-  // },
-  // {
-  //   key: "divider-2",
-  //   type: "divider",
-  // },
   {
     // 重启
     key: "restart",

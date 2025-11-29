@@ -202,19 +202,6 @@ onBeforeMount(() => {
   &:active {
     background-color: rgba(var(--primary), 0.12);
   }
-  @media (max-width: 768px) {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    justify-content: center;
-    background-color: transparent;
-    .avatar {
-      border: none;
-    }
-    .user-data {
-      display: none;
-    }
-  }
 }
 .user-menu {
   display: flex;

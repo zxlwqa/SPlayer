@@ -1,92 +1,51 @@
 <template>
   <div class="setting">
-    <!-- 移动端：折叠面板模式 -->
-    <div v-if="isMobile" class="mobile-setting">
+    <div class="set-left">
       <n-flex class="title" :size="0" vertical>
         <n-h1>设置</n-h1>
         <n-text :depth="3">个性化与全局设置</n-text>
       </n-flex>
-      <n-scrollbar class="set-content">
-        <n-collapse :default-expanded-names="['general']" accordion>
-          <n-collapse-item title="常规设置" name="general">
-            <GeneralSetting />
-          </n-collapse-item>
-          <n-collapse-item title="播放设置" name="play">
-            <PlaySetting />
-          </n-collapse-item>
-          <n-collapse-item title="歌词设置" name="lyrics">
-            <LyricsSetting />
-          </n-collapse-item>
-          <n-collapse-item title="其他设置" name="other">
-            <OtherSetting />
-          </n-collapse-item>
-          <n-collapse-item title="关于" name="about">
-            <AboutSetting />
-          </n-collapse-item>
-        </n-collapse>
-        <!-- 信息 -->
-        <div class="power">
-          <n-text class="author" :depth="2" @click="toGithub">
-            <SvgIcon name="Github" :size="20" />
-            {{ packageJson.author }}
-          </n-text>
-          <n-text class="name">SPlayer</n-text>
-          <n-text class="version" depth="3">{{ packageJson.version }}</n-text>
-        </div>
-      </n-scrollbar>
+      <!-- 设置菜单 -->
+      <n-menu
+        v-model:value="activeKey"
+        :options="menuOptions"
+        :indent="10"
+        @update:value="setScrollbar?.scrollTo({ top: 0, behavior: 'smooth' })"
+      />
+      <!-- 信息 -->
+      <div class="power">
+        <n-text class="author" :depth="2" @click="toGithub">
+          <SvgIcon name="Github" :size="20" />
+          {{ packageJson.author }}
+        </n-text>
+        <n-text class="name">SPlayer</n-text>
+        <n-text class="version" depth="3">{{ packageJson.version }}</n-text>
+      </div>
     </div>
-
-    <!-- 桌面端：左右分栏模式 -->
-    <template v-else>
-      <div class="set-left">
-        <n-flex class="title" :size="0" vertical>
-          <n-h1>设置</n-h1>
-          <n-text :depth="3">个性化与全局设置</n-text>
-        </n-flex>
-        <!-- 设置菜单 -->
-        <n-menu
-          v-model:value="activeKey"
-          :options="menuOptions"
-          :indent="10"
-          @update:value="setScrollbar?.scrollTo({ top: 0, behavior: 'smooth' })"
-        />
-        <!-- 信息 -->
-        <div class="power">
-          <n-text class="author" :depth="2" @click="toGithub">
-            <SvgIcon name="Github" :size="20" />
-            {{ packageJson.author }}
-          </n-text>
-          <n-text class="name">SPlayer</n-text>
-          <n-text class="version" depth="3">{{ packageJson.version }}</n-text>
-        </div>
-      </div>
-      <div class="set-right">
-        <n-scrollbar
-          ref="setScrollbar"
-          class="set-content"
-          :content-style="{ overflow: 'hidden', padding: '40px 0' }"
-        >
-          <Transition name="fade" mode="out-in">
-            <!-- 常规 -->
-            <GeneralSetting v-if="activeKey === 'general'" />
-            <!-- 播放 -->
-            <PlaySetting v-else-if="activeKey === 'play'" />
-            <!-- 歌词 -->
-            <LyricsSetting v-else-if="activeKey === 'lyrics'" />
-            <!-- 快捷键 -->
-            <KeyboardSetting v-else-if="activeKey === 'keyboard'" />
-            <!-- 本地 -->
-            <LocalSetting v-else-if="activeKey === 'local'" />
-            <!-- 其他 -->
-            <OtherSetting v-else-if="activeKey === 'other'" />
-            <!-- 关于 -->
-            <AboutSetting v-else-if="activeKey === 'about'" />
-            <!-- 空白 -->
-            <n-text v-else class="error">暂无该设置项</n-text>
-          </Transition>
-        </n-scrollbar>
-      </div>
-    </template>
+    <n-scrollbar
+      ref="setScrollbar"
+      class="set-content"
+      :content-style="{ overflow: 'hidden', padding: '40px 0' }"
+    >
+      <Transition name="fade" mode="out-in">
+        <!-- 常规 -->
+        <GeneralSetting v-if="activeKey === 'general'" />
+        <!-- 播放 -->
+        <PlaySetting v-else-if="activeKey === 'play'" />
+        <!-- 歌词 -->
+        <LyricsSetting v-else-if="activeKey === 'lyrics'" />
+        <!-- 快捷键 -->
+        <KeyboardSetting v-else-if="activeKey === 'keyboard'" />
+        <!-- 本地 -->
+        <LocalSetting v-else-if="activeKey === 'local'" />
+        <!-- 其他 -->
+        <OtherSetting v-else-if="activeKey === 'other'" />
+        <!-- 关于 -->
+        <AboutSetting v-else-if="activeKey === 'about'" />
+        <!-- 空白 -->
+        <n-text v-else class="error">暂无该设置项</n-text>
+      </Transition>
+    </n-scrollbar>
   </div>
 </template>
 
@@ -95,7 +54,7 @@ import type { MenuOption, NScrollbar } from "naive-ui";
 import type { SettingType } from "@/types/main";
 import { renderIcon } from "@/utils/helper";
 import packageJson from "@/../package.json";
-import { isElectron, isMobile } from "@/utils/env";
+import { isElectron } from "@/utils/env";
 
 const props = defineProps<{ type: SettingType }>();
 
@@ -104,8 +63,6 @@ const setScrollbar = ref<InstanceType<typeof NScrollbar> | null>(null);
 
 // 菜单数据
 const activeKey = ref<SettingType>(props.type);
-
-
 
 // 菜单内容
 const menuOptions: MenuOption[] = [
@@ -160,69 +117,6 @@ const toGithub = () => {
   width: 100%;
   height: 75vh;
   min-height: 75vh;
-  .mobile-setting {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-    .title {
-      margin: 10px 0 20px 10px;
-      .n-h1 {
-        font-size: 26px;
-        font-weight: bold;
-        margin-top: 0;
-        line-height: normal;
-        margin-bottom: 6px;
-      }
-    }
-    .set-content {
-      flex: 1;
-      :deep(.n-collapse-item) {
-        margin-bottom: 16px;
-        .n-collapse-item__header {
-          padding: 16px;
-          background-color: var(--surface-container-hex);
-          border-radius: 12px;
-          .n-collapse-item__header-main {
-            font-size: 16px;
-            font-weight: bold;
-          }
-        }
-        .n-collapse-item__content-inner {
-          padding: 16px 0;
-        }
-      }
-    }
-    .power {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      margin-top: 20px;
-      padding-bottom: 20px;
-      .name {
-        font-weight: bold;
-        margin-right: 6px;
-      }
-      .version {
-        &::before {
-          content: "v";
-          margin-right: 2px;
-        }
-      }
-      .author {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        margin-right: 12px;
-        cursor: pointer;
-        .n-icon {
-          margin-right: 4px;
-        }
-      }
-    }
-  }
   .set-left {
     display: flex;
     flex-direction: column;
@@ -230,9 +124,6 @@ const toGithub = () => {
     height: 100%;
     padding: 20px;
     background-color: var(--surface-container-hex);
-    @media (max-width: 768px) {
-      display: none;
-    }
     .title {
       margin: 10px 0 20px 10px;
       .n-h1 {
@@ -270,13 +161,6 @@ const toGithub = () => {
         }
       }
     }
-  }
-  .set-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
   }
 }
 </style>

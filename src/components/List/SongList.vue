@@ -44,7 +44,7 @@
                 </div>
               </n-dropdown>
               <n-text v-else class="title">标题</n-text>
-              <n-text v-if="type !== 'radio' && !hiddenAlbum && !isMobile" class="album">专辑</n-text>
+              <n-text v-if="type !== 'radio' && !hiddenAlbum" class="album">专辑</n-text>
               <n-text v-if="type !== 'radio'" class="actions">操作</n-text>
               <n-text v-if="type === 'radio'" class="meta date">更新日期</n-text>
               <n-text v-if="type === 'radio'" class="meta">播放量</n-text>
@@ -58,7 +58,7 @@
               :song="itemData"
               :index="index"
               :hiddenCover="hiddenCover"
-              :hiddenAlbum="hiddenAlbum || isMobile"
+              :hiddenAlbum="hiddenAlbum"
               :hiddenSize="hiddenSize"
               @dblclick.stop="
                 doubleClickAction === 'add'
@@ -130,7 +130,6 @@ import { entries, isEmpty } from "lodash-es";
 import { sortOptions } from "@/utils/meta";
 import { renderIcon } from "@/utils/helper";
 import { usePlayer } from "@/utils/player";
-import { isMobile } from "@/utils/env";
 import SongListMenu from "@/components/Menu/SongListMenu.vue";
 
 const props = withDefaults(

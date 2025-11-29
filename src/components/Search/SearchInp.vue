@@ -191,25 +191,6 @@ onMounted(() => {
     &.focus {
       width: 300px;
     }
-    @media (max-width: 768px) {
-      width: 40px;
-      padding: 0;
-      :deep(.n-input__input) {
-        opacity: 0;
-      }
-      :deep(.n-input__placeholder) {
-        opacity: 0;
-      }
-      &.focus {
-        width: 200px;
-        :deep(.n-input__input) {
-          opacity: 1;
-        }
-        :deep(.n-input__placeholder) {
-          opacity: 1;
-        }
-      }
-    }
   }
   .search-mask {
     position: fixed;

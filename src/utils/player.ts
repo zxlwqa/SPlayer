@@ -307,13 +307,13 @@ class Player {
       artist: isRadio
         ? "播客电台"
         : // 非本地歌曲且歌手列表为数组
-        Array.isArray(playSongData.artists)
+          Array.isArray(playSongData.artists)
           ? playSongData.artists.map((item) => item.name).join(" / ")
           : String(playSongData.artists),
       album: isRadio
         ? "播客电台"
         : // 是否为对象
-        typeof playSongData.album === "object"
+          typeof playSongData.album === "object"
           ? playSongData.album.name
           : String(playSongData.album),
       artwork: [
@@ -614,18 +614,14 @@ class Player {
     const statusStore = useStatusStore();
     const settingStore = useSettingStore();
     // 检查播放器状态
-    if (!this.player) {
-      window.$message.warning("播放器未初始化，请稍后重试");
+    if (!this.player || this.player.state() === "unloaded") {
+      window.$message.warning("播放器未加载完成，请稍后重试");
       return;
     }
     // 已在播放
     if (this.player.playing()) {
       statusStore.playStatus = true;
       return;
-    }
-    // 若未加载完成
-    if (this.player.state() === "unloaded") {
-      this.player.load();
     }
     this.player.play();
     // 淡入
@@ -647,8 +643,8 @@ class Player {
     const settingStore = useSettingStore();
 
     // 播放器未加载完成或不存在
-    if (!this.player) {
-      window.$message.warning("播放器未初始化，请稍后重试");
+    if (!this.player || this.player.state() !== "loaded") {
+      window.$message.warning("播放器未加载完成，请稍后重试");
       return;
     }
     // 立即设置播放状态
@@ -827,7 +823,7 @@ class Player {
   setSeek(time: number) {
     const statusStore = useStatusStore();
     // 检查播放器状态
-    if (!this.player) {
+    if (!this.player || this.player.state() !== "loaded") {
       console.warn("⚠️ Player not ready for seek");
       return;
     }
@@ -927,10 +923,10 @@ class Player {
       scrobble?: boolean;
       play?: boolean;
     } = {
-        showTip: true,
-        scrobble: true,
-        play: true,
-      },
+      showTip: true,
+      scrobble: true,
+      play: true,
+    },
   ) {
     if (!data || !data.length) return;
     const dataStore = useDataStore();

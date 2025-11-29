@@ -1,94 +1,92 @@
 <template>
   <div class="player-control">
-    <div
-      class="control-content"
-      :class="{ hide: !statusStore.playerMetaShow }"
-      @click.stop
-    >
-      <n-flex class="left" align="center">
-        <!-- 喜欢歌曲 -->
-        <div
-          v-if="musicStore.playSong.type !== 'radio'"
-          class="menu-icon"
-          @click="toLikeSong(musicStore.playSong, !dataStore.isLikeSong(musicStore.playSong.id))"
-        >
-          <SvgIcon
-            :name="dataStore.isLikeSong(musicStore.playSong.id) ? 'Favorite' : 'FavoriteBorder'"
-          />
-        </div>
-        <!-- 添加到歌单 -->
-        <div
-          class="menu-icon"
-          @click.stop="openPlaylistAdd([musicStore.playSong], !!musicStore.playSong.path)"
-        >
-          <SvgIcon name="AddList" />
-        </div>
-        <!-- 下载 -->
-        <div v-if="!isMobile" class="menu-icon" @click.stop="openDownloadSong(musicStore.playSong)">
-          <SvgIcon name="Download" />
-        </div>
-        <!-- 显示评论 -->
-        <div
-          v-if="!musicStore.playSong.path && !statusStore.pureLyricMode && !isMobile"
-          class="menu-icon"
-          @click.stop="statusStore.showPlayerComment = !statusStore.showPlayerComment"
-        >
-          <SvgIcon :depth="statusStore.showPlayerComment ? 1 : 3" name="Message" />
-        </div>
-      </n-flex>
-      <div class="center">
-        <div class="btn">
-          <!-- 不喜欢 -->
+    <Transition name="fade" mode="out-in">
+      <div v-show="statusStore.playerMetaShow" class="control-content" @click.stop>
+        <n-flex class="left" align="center">
+          <!-- 喜欢歌曲 -->
           <div
-            v-if="statusStore.personalFmMode"
-            class="btn-icon"
-            v-debounce="() => player.personalFMTrash(musicStore.personalFMSong?.id)"
+            v-if="musicStore.playSong.type !== 'radio'"
+            class="menu-icon"
+            @click="toLikeSong(musicStore.playSong, !dataStore.isLikeSong(musicStore.playSong.id))"
           >
-            <SvgIcon class="icon" :size="18" name="ThumbDown" />
+            <SvgIcon
+              :name="dataStore.isLikeSong(musicStore.playSong.id) ? 'Favorite' : 'FavoriteBorder'"
+            />
           </div>
-          <!-- 上一曲 -->
-          <div v-else class="btn-icon" v-debounce="() => player.nextOrPrev('prev')">
-            <SvgIcon :size="26" name="SkipPrev" />
-          </div>
-          <!-- 播放暂停 -->
-          <n-button
-            :loading="statusStore.playLoading"
-            :focusable="false"
-            :keyboard="false"
-            class="play-pause"
-            type="primary"
-            strong
-            secondary
-            circle
-            @click.stop="player.playOrPause()"
+          <!-- 添加到歌单 -->
+          <div
+            class="menu-icon"
+            @click.stop="openPlaylistAdd([musicStore.playSong], !!musicStore.playSong.path)"
           >
-            <template #icon>
-              <Transition name="fade" mode="out-in">
-                <SvgIcon
-                  :key="statusStore.playStatus ? 'Pause' : 'Play'"
-                  :name="statusStore.playStatus ? 'Pause' : 'Play'"
-                  :size="28"
-                />
-              </Transition>
-            </template>
-          </n-button>
-          <!-- 下一曲 -->
-          <div class="btn-icon" v-debounce="() => player.nextOrPrev('next')">
-            <SvgIcon :size="26" name="SkipNext" />
+            <SvgIcon name="AddList" />
+          </div>
+          <!-- 下载 -->
+          <div class="menu-icon" @click.stop="openDownloadSong(musicStore.playSong)">
+            <SvgIcon name="Download" />
+          </div>
+          <!-- 显示评论 -->
+          <div
+            v-if="!musicStore.playSong.path && !statusStore.pureLyricMode"
+            class="menu-icon"
+            @click.stop="statusStore.showPlayerComment = !statusStore.showPlayerComment"
+          >
+            <SvgIcon :depth="statusStore.showPlayerComment ? 1 : 3" name="Message" />
+          </div>
+        </n-flex>
+        <div class="center">
+          <div class="btn">
+            <!-- 不喜欢 -->
+            <div
+              v-if="statusStore.personalFmMode"
+              class="btn-icon"
+              v-debounce="() => player.personalFMTrash(musicStore.personalFMSong?.id)"
+            >
+              <SvgIcon class="icon" :size="18" name="ThumbDown" />
+            </div>
+            <!-- 上一曲 -->
+            <div v-else class="btn-icon" v-debounce="() => player.nextOrPrev('prev')">
+              <SvgIcon :size="26" name="SkipPrev" />
+            </div>
+            <!-- 播放暂停 -->
+            <n-button
+              :loading="statusStore.playLoading"
+              :focusable="false"
+              :keyboard="false"
+              class="play-pause"
+              type="primary"
+              strong
+              secondary
+              circle
+              @click.stop="player.playOrPause()"
+            >
+              <template #icon>
+                <Transition name="fade" mode="out-in">
+                  <SvgIcon
+                    :key="statusStore.playStatus ? 'Pause' : 'Play'"
+                    :name="statusStore.playStatus ? 'Pause' : 'Play'"
+                    :size="28"
+                  />
+                </Transition>
+              </template>
+            </n-button>
+            <!-- 下一曲 -->
+            <div class="btn-icon" v-debounce="() => player.nextOrPrev('next')">
+              <SvgIcon :size="26" name="SkipNext" />
+            </div>
+          </div>
+          <!-- 进度条 -->
+          <div class="slider">
+            <span>{{ msToTime(statusStore.currentTime) }}</span>
+            <PlayerSlider :show-tooltip="false" />
+            <span>{{ msToTime(statusStore.duration) }}</span>
           </div>
         </div>
-        <!-- 进度条 -->
-        <div class="slider">
-          <span>{{ msToTime(statusStore.currentTime) }}</span>
-          <PlayerSlider :show-tooltip="false" />
-          <span>{{ msToTime(statusStore.duration) }}</span>
-        </div>
+        <n-flex class="right" align="center" justify="end">
+          <!-- 功能区 -->
+          <PlayerRightMenu player />
+        </n-flex>
       </div>
-      <n-flex class="right" align="center" justify="end">
-        <!-- 功能区 -->
-        <PlayerRightMenu player />
-      </n-flex>
-    </div>
+    </Transition>
   </div>
 </template>
 
@@ -98,7 +96,6 @@ import { msToTime } from "@/utils/time";
 import { openDownloadSong, openPlaylistAdd } from "@/utils/modal";
 import { toLikeSong } from "@/utils/auth";
 import { usePlayer } from "@/utils/player";
-import { isMobile } from "@/utils/env";
 
 const player = usePlayer();
 const dataStore = useDataStore();
@@ -118,11 +115,6 @@ const statusStore = useStatusStore();
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     align-items: center;
-    transition: opacity 0.3s;
-    &.hide {
-      opacity: 0;
-      pointer-events: none;
-    }
   }
   .left,
   .right {
@@ -244,78 +236,6 @@ const statusStore = useStatusStore();
     .left,
     .right {
       opacity: 1;
-    }
-  }
-  @media (max-width: 768px) {
-    height: auto;
-    padding-bottom: 20px;
-    .control-content {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      .left,
-      .right {
-        opacity: 1;
-        padding: 0 20px;
-        order: 1;
-        flex: 1;
-        width: 0; /* Ensure flex items can shrink */
-      }
-      .left {
-        justify-content: flex-start;
-        order: 1;
-        flex: 1;
-        width: 0;
-      }
-      .right {
-        justify-content: flex-end;
-        order: 3;
-        flex: 1;
-        width: 0;
-      }
-      .center {
-        display: contents;
-        .btn {
-          order: 2;
-          flex: 0 0 auto;
-          justify-content: center;
-          width: auto;
-        }
-        .slider {
-          order: 4;
-          width: 100%;
-          max-width: 100%;
-          padding: 0 24px;
-          margin-top: 10px;
-          box-sizing: border-box;
-          position: relative; /* For absolute positioning of time */
-          // Mobile style: Stack slider and time
-          flex-direction: column;
-          align-items: stretch;
-          justify-content: center;
-          height: 40px; /* Give some height for the slider and time */
-          
-          .n-slider {
-            margin: 0;
-            width: 100%;
-          }
-          
-          span {
-            font-size: 12px;
-            opacity: 0.5;
-            position: absolute;
-            bottom: 0;
-            
-            &:first-child {
-              left: 24px;
-            }
-            &:last-child {
-              right: 24px;
-            }
-          }
-        }
-      }
     }
   }
 }

@@ -146,7 +146,6 @@
     <!-- 功能 -->
     <Transition name="fade" mode="out-in">
       <n-flex
-        v-if="!isMobile"
         :key="statusStore.personalFmMode ? 'fm' : 'normal'"
         :size="[8, 0]"
         class="play-menu"
@@ -192,7 +191,6 @@ import type { DropdownOption } from "naive-ui";
 import { useMusicStore, useStatusStore, useDataStore, useSettingStore } from "@/stores";
 import { msToTime, convertSecondsToTime } from "@/utils/time";
 import { renderIcon, coverLoaded } from "@/utils/helper";
-import { isMobile } from "@/utils/env";
 import { toLikeSong } from "@/utils/auth";
 import {
   openAutoClose,
@@ -301,10 +299,6 @@ const instantLyrics = computed(() => {
   align-items: center;
   transition: bottom 0.3s;
   z-index: 10;
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr auto;
-    padding: 0 20px;
-  }
   &.show {
     bottom: 0;
   }
@@ -460,12 +454,6 @@ const instantLyrics = computed(() => {
     justify-content: center;
     align-items: center;
     margin: 0 40px;
-    @media (max-width: 768px) {
-      margin: 0;
-      .play-icon {
-        display: none;
-      }
-    }
     .play-pause {
       --n-width: 44px;
       --n-height: 44px;
@@ -473,9 +461,6 @@ const instantLyrics = computed(() => {
       transition:
         background-color 0.3s,
         transform 0.3s;
-      @media (max-width: 768px) {
-        margin: 0;
-      }
       .n-icon {
         transition: opacity 0.1s ease-in-out;
       }

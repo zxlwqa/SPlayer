@@ -215,9 +215,6 @@ const jumpPage = debounce(
     font-size: 16px;
     display: flex;
     align-items: center;
-    @media (max-width: 768px) {
-      display: none;
-    }
     .n-icon {
       margin-right: 4px;
     }

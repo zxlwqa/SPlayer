@@ -13,11 +13,11 @@
     <!-- 其他方式 -->
     <n-flex align="center" class="other">
       <n-button :focusable="false" size="small" quaternary round @click="specialLogin('uid')">
-        {{ isMobile ? "UID" : "UID 登录" }}
+        UID 登录
       </n-button>
       <n-divider vertical />
       <n-button :focusable="false" size="small" quaternary round @click="specialLogin('cookie')">
-        {{ isMobile ? "Cookie" : "Cookie 登录" }}
+        Cookie 登录
       </n-button>
     </n-flex>
     <!-- 关闭登录 -->
@@ -35,7 +35,6 @@ import { setCookies } from "@/utils/cookie";
 import { updateSpecialUserData, updateUserData } from "@/utils/auth";
 import { useDataStore } from "@/stores";
 import { LoginType } from "@/types/main";
-import { isMobile } from "@/utils/env";
 import LoginUID from "./LoginUID.vue";
 import LoginCookie from "./LoginCookie.vue";
 
@@ -122,22 +121,6 @@ onBeforeMount(() => {
   }
   .close {
     margin-bottom: 8px;
-  }
-  @media (max-width: 768px) {
-    .logo {
-      width: 50px;
-      height: 50px;
-      margin: 10px auto 20px auto;
-    }
-    .login-tabs {
-      transform: scale(0.9);
-    }
-    .other {
-      margin: 10px 0;
-      .n-button {
-        width: 80px;
-      }
-    }
   }
 }
 </style>

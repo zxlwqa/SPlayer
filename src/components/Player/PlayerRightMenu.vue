@@ -1,12 +1,12 @@
 <template>
   <n-flex :size="8" align="center" class="right-menu">
-    <n-badge v-if="isElectron && !isMobile" value="ON" :show="statusStore.showDesktopLyric">
+    <n-badge v-if="isElectron" value="ON" :show="statusStore.showDesktopLyric">
       <div class="menu-icon" @click.stop="player.toggleDesktopLyric">
         <SvgIcon name="DesktopLyric2" :depth="statusStore.showDesktopLyric ? 1 : 3" />
       </div>
     </n-badge>
     <!-- 其他控制 -->
-    <n-dropdown v-if="!isMobile" :options="controlsOptions" :show-arrow="false">
+    <n-dropdown :options="controlsOptions" :show-arrow="false">
       <div class="menu-icon">
         <SvgIcon name="Controls" />
       </div>
@@ -23,7 +23,7 @@
       </div>
     </n-dropdown>
     <!-- 音量调节 -->
-    <n-popover v-if="!isMobile" :show-arrow="false" :style="{ padding: 0 }">
+    <n-popover :show-arrow="false" :style="{ padding: 0 }">
       <template #trigger>
         <div class="menu-icon" @click.stop="player.toggleMute" @wheel="player.setVolume">
           <SvgIcon :name="statusStore.playVolumeIcon" />
@@ -63,7 +63,7 @@
 import type { DropdownOption } from "naive-ui";
 import { useMusicStore, useStatusStore, useDataStore, useSettingStore } from "@/stores";
 import { openAutoClose, openChangeRate, openEqualizer } from "@/utils/modal";
-import { isElectron, isMobile } from "@/utils/env";
+import { isElectron } from "@/utils/env";
 import { renderIcon } from "@/utils/helper";
 import { usePlayer } from "@/utils/player";
 
